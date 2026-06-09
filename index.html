@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>国际商务进阶 · 在线题库</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #f0f2f5;
+    color: #1a1a2e;
+    min-height: 100vh;
+  }
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  header {
+    text-align: center;
+    padding: 30px 0 20px;
+  }
+  header h1 {
+    font-size: 26px;
+    color: #1a1a2e;
+    letter-spacing: 1px;
+  }
+  header p {
+    color: #666;
+    font-size: 14px;
+    margin-top: 6px;
+  }
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 24px;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 14px 0;
+    border: none;
+    background: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #666;
+    position: relative;
+  }
+  .tab-btn:hover { background: #f8f9fa; }
+  .tab-btn.active {
+    color: #4361ee;
+    background: #f0f4ff;
+  }
+  .tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 20%;
+    width: 60%;
+    height: 3px;
+    background: #4361ee;
+    border-radius: 3px 3px 0 0;
+  }
+  .tab-badge {
+    display: inline-block;
+    background: #e8ecf4;
+    color: #555;
+    font-size: 12px;
+    padding: 1px 8px;
+    border-radius: 10px;
+    margin-left: 6px;
+  }
+  .progress-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .progress-track {
+    flex: 1;
+    height: 6px;
+    background: #e0e0e0;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4361ee, #7209b7);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+  .progress-text {
+    font-size: 13px;
+    color: #666;
+    white-space: nowrap;
+  }
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 28px 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    margin-bottom: 20px;
+    transition: opacity 0.3s;
+  }
+  .q-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #4361ee, #7209b7);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 3px 14px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  .q-text {
+    font-size: 17px;
+    line-height: 1.7;
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 18px;
+    border: 2px solid #e8ecf4;
+    border-radius: 12px;
+    background: #fafbfc;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #333;
+    width: 100%;
+  }
+  .option-btn:hover:not(.disabled) {
+    border-color: #4361ee;
+    background: #f0f4ff;
+  }
+  .option-btn .label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #e8ecf4;
+    font-weight: 600;
+    font-size: 13px;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .option-btn .text { padding-top: 2px; }
+  .option-btn.correct {
+    border-color: #2ec4b6;
+    background: #f0faf8;
+  }
+  .option-btn.correct .label {
+    background: #2ec4b6;
+    color: #fff;
+  }
+  .option-btn.wrong {
+    border-color: #ef476f;
+    background: #fef0f3;
+  }
+  .option-btn.wrong .label {
+    background: #ef476f;
+    color: #fff;
+  }
+  .option-btn.disabled { cursor: default; opacity: 1; }
+  .reveal {
+    margin-top: 20px;
+    padding: 18px 20px;
+    border-radius: 12px;
+    background: #f8f9ff;
+    border-left: 4px solid #4361ee;
+    animation: fadeSlideUp 0.35s ease;
+  }
+  .reveal .ans {
+    font-weight: 700;
+    color: #4361ee;
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+  .reveal .ans .tag {
+    display: inline-block;
+    padding: 2px 12px;
+    border-radius: 12px;
+    font-size: 14px;
+  }
+  .reveal .ans .tag.correct-tag { background: #d4f5f0; color: #0d7a6e; }
+  .reveal .ans .tag.wrong-tag { background: #fde8ec; color: #c1121f; }
+  .reveal .exp {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .nav-btns {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .nav-btn {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .nav-btn.primary {
+    background: linear-gradient(135deg, #4361ee, #7209b7);
+    color: #fff;
+  }
+  .nav-btn.primary:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(67,97,238,0.3); }
+  .nav-btn.secondary {
+    background: #e8ecf4;
+    color: #555;
+  }
+  .nav-btn.secondary:hover { background: #dce0e8; }
+  .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+  .nav-center { display: flex; gap: 8px; }
+  .jump-input {
+    width: 60px;
+    padding: 8px 6px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 14px;
+  }
+  .jump-input:focus { outline: none; border-color: #4361ee; }
+  .jump-btn {
+    padding: 8px 14px;
+    border: none;
+    background: #e8ecf4;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .jump-btn:hover { background: #dce0e8; }
+  .summary-card {
+    text-align: center;
+    padding: 40px 30px;
+  }
+  .summary-card h2 { font-size: 22px; margin-bottom: 10px; }
+  .summary-card .score {
+    font-size: 48px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #4361ee, #7209b7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 10px 0;
+  }
+  .summary-card .detail { color: #666; font-size: 15px; line-height: 1.8; }
+  .summary-card .restart-btn {
+    margin-top: 20px;
+    padding: 12px 36px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #4361ee, #7209b7);
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .summary-card .restart-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(67,97,238,0.3); }
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (max-width: 600px) {
+    .container { padding: 12px; }
+    .card { padding: 18px 16px; }
+    .q-text { font-size: 15px; }
+    .option-btn { padding: 12px 14px; font-size: 14px; }
+    .nav-btns { flex-wrap: wrap; justify-content: center; }
+    .nav-btn { padding: 10px 20px; font-size: 14px; }
+    header h1 { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>📘 国际商务进阶 · 综合复习题库</h1>
+    <p>共 120 题（60 道单选题 + 60 道判断题）· 自动批改 + 解析</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('choice')">
+      单选题 <span class="tab-badge">60题</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('judge')">
+      判断题 <span class="tab-badge">60题</span>
+    </button>
+  </div>
+
+  <div id="app"></div>
+</div>
+
+<script>
+// ============================================================
+// 数据：60 道单项选择题
+// ============================================================
+const choiceQuestions = [
+  { id: 1,
+    question: '下列哪一项最能体现市场全球化的含义？',
+    options: [
+      { label: 'A', text: '企业把研发部门全部设在母国' },
+      { label: 'B', text: '政府提高进口关税以保护本国产业' },
+      { label: 'C', text: '不同国家消费者逐渐形成相似需求并购买同类产品' },
+      { label: 'D', text: '企业只在本国采购原材料' }
+    ], answer: 'C', explanation: '市场全球化强调不同国家市场需求趋同，企业可以面向全球销售相似产品。' },
+  { id: 2,
+    question: '一国政府强制收回外资企业资产并给予部分补偿，这通常被称为_____。',
+    options: [
+      { label: 'A', text: '征用' },
+      { label: 'B', text: '禁运' },
+      { label: 'C', text: '汇率干预' },
+      { label: 'D', text: '特许经营' }
+    ], answer: 'A', explanation: '政府强制收回外资资产并给予补偿属于征用；若无补偿通常称没收。' },
+  { id: 3,
+    question: '在跨文化谈判中，如果一方更重视关系、暗示、沉默和场合背景，这更接近_____文化。',
+    options: [
+      { label: 'A', text: '低语境' },
+      { label: 'B', text: '高语境' },
+      { label: 'C', text: '个人主义' },
+      { label: 'D', text: '短期导向' }
+    ], answer: 'B', explanation: '高语境文化依赖关系、背景、暗示和非语言信息，沟通不完全靠字面表达。' },
+  { id: 4,
+    question: '甲国生产 1 单位咖啡需 4 小时、生产 1 单位芯片需 10 小时；乙国生产 1 单位咖啡需 6 小时、生产 1 单位芯片需 8 小时。根据比较优势理论，合理分工是_____。',
+    options: [
+      { label: 'A', text: '甲国专门生产咖啡，乙国专门生产芯片' },
+      { label: 'B', text: '甲国专门生产芯片，乙国专门生产咖啡' },
+      { label: 'C', text: '两国均只生产咖啡' },
+      { label: 'D', text: '两国没有任何贸易基础' }
+    ], answer: 'A', explanation: '比较机会成本：甲国咖啡机会成本较低，乙国芯片机会成本较低，因此分工对应咖啡与芯片。' },
+  { id: 5,
+    question: '某国规定"前 5 万台进口空调适用 5% 关税，超过部分适用 25% 关税"，这种政策属于_____。',
+    options: [
+      { label: 'A', text: '自愿出口限制' },
+      { label: 'B', text: '外汇管制' },
+      { label: 'C', text: '从量税' },
+      { label: 'D', text: '关税配额' }
+    ], answer: 'D', explanation: '关税配额是"限额内低税率、超过限额高税率"的两阶段关税安排。' },
+  { id: 6,
+    question: '出口国政府向本国企业提供低息贷款，使其出口价格明显低于正常竞争水平，进口国可能采取的贸易救济措施是_____。',
+    options: [
+      { label: 'A', text: '自由贸易区' },
+      { label: 'B', text: '最惠国待遇' },
+      { label: 'C', text: '反补贴税' },
+      { label: 'D', text: '货币互换' }
+    ], answer: 'C', explanation: '低息贷款属于出口补贴，进口国可用反补贴税抵消补贴造成的不公平竞争。' },
+  { id: 7,
+    question: '某企业在海外从零开始购地、建厂、招聘并建立生产体系，这属于_____。',
+    options: [
+      { label: 'A', text: '证券投资' },
+      { label: 'B', text: '特许经营' },
+      { label: 'C', text: '绿地投资' },
+      { label: 'D', text: '出口代理' }
+    ], answer: 'C', explanation: '绿地投资指企业在东道国从零新建生产经营体系。' },
+  { id: 8,
+    question: '中国居民赴法国旅游并在当地支付酒店费用，在中国国际收支表中应记入_____。',
+    options: [
+      { label: 'A', text: '服务贸易借方' },
+      { label: 'B', text: '服务贸易贷方' },
+      { label: 'C', text: '资本账户贷方' },
+      { label: 'D', text: '储备资产增加' }
+    ], answer: 'A', explanation: '居民境外旅游消费属于服务进口，对中国而言记入服务贸易借方。' },
+  { id: 9,
+    question: '在直接标价法下，若 USD/CNY 由 7.10 上升到 7.30，表示_____。',
+    options: [
+      { label: 'A', text: '人民币贬值，美元升值' },
+      { label: 'B', text: '人民币升值，美元贬值' },
+      { label: 'C', text: '两国物价不变' },
+      { label: 'D', text: '汇率制度由固定变为浮动' }
+    ], answer: 'A', explanation: '直接标价法下汇率数值上升表示单位外币可兑换更多本币，即本币贬值、外币升值。' },
+  { id: 10,
+    question: '银行报价 USD/CNY 为 7.1200/7.1280，则点差为_____。',
+    options: [
+      { label: 'A', text: '7.1240' },
+      { label: 'B', text: '0.8000' },
+      { label: 'C', text: '0.0080' },
+      { label: 'D', text: '14.2480' }
+    ], answer: 'C', explanation: '点差等于卖出价减买入价：7.1280-7.1200=0.0080。' },
+  { id: 11,
+    question: '在直接标价法下，即期汇率为 1 美元=7.20 元人民币，3 个月远期升水 80 点，则远期汇率为_____。',
+    options: [
+      { label: 'A', text: '7.1920' },
+      { label: 'B', text: '7.2080' },
+      { label: 'C', text: '7.2800' },
+      { label: 'D', text: '7.1200' }
+    ], answer: 'B', explanation: '直接标价法下远期升水表示外币远期价格上升；80点为0.0080，因此7.20+0.0080=7.2080。' },
+  { id: 12,
+    question: '布雷顿森林体系的"双挂钩"是指_____。',
+    options: [
+      { label: 'A', text: '欧元挂钩美元，美元挂钩石油' },
+      { label: 'B', text: '美元挂钩黄金，各国货币挂钩美元' },
+      { label: 'C', text: '人民币挂钩欧元，欧元挂钩黄金' },
+      { label: 'D', text: '各国货币完全自由浮动' }
+    ], answer: 'B', explanation: '布雷顿森林体系的核心是美元与黄金挂钩，其他成员国货币与美元挂钩。' },
+  { id: 13,
+    question: '某美国企业在日本发行以日元计价的债券，该债券通常属于_____。',
+    options: [
+      { label: 'A', text: '欧洲债券' },
+      { label: 'B', text: '外国债券' },
+      { label: 'C', text: '股票期权' },
+      { label: 'D', text: '特别提款权' }
+    ], answer: 'B', explanation: '一国企业在另一国发行以东道国货币计价的债券属于外国债券。' },
+  { id: 14,
+    question: '企业同时面临强全球整合压力和强本地响应压力时，理论上最匹配的组织结构是_____。',
+    options: [
+      { label: 'A', text: '全球矩阵结构' },
+      { label: 'B', text: '单一职能结构' },
+      { label: 'C', text: '纯国内事业部' },
+      { label: 'D', text: '简单直线制' }
+    ], answer: 'A', explanation: '全球矩阵结构有助于同时协调全球整合和本地响应两类压力。' },
+  { id: 15,
+    question: '下列哪一项最能体现"文化控制"？_____。',
+    options: [
+      { label: 'A', text: '制定详细报销手册' },
+      { label: 'B', text: '只考核销售额结果' },
+      { label: 'C', text: '依靠共同价值观引导员工自我管理' },
+      { label: 'D', text: '总部每天审批子公司采购' }
+    ], answer: 'C', explanation: '文化控制依靠共同价值观和组织文化引导员工自我约束，而非完全依赖制度审批。' },
+  { id: 16,
+    question: '负责协调国际间货币事务、维持全球汇率稳定的主要国际金融组织是_____。',
+    options: [
+      { label: 'A', text: '世界银行' },
+      { label: 'B', text: '国际清算银行' },
+      { label: 'C', text: '国际货币基金组织 (IMF)' },
+      { label: 'D', text: '世界贸易组织' }
+    ], answer: 'C', explanation: 'IMF的主要职能包括国际货币合作、汇率稳定和国际收支支持。' },
+  { id: 17,
+    question: '跨国公司在海外设立全资子公司，通过新建厂房和生产线来进入东道国市场。这种对外直接投资方式被称为_____。',
+    options: [
+      { label: 'A', text: '绿地投资' },
+      { label: 'B', text: '跨国并购' },
+      { label: 'C', text: '特许经营' },
+      { label: 'D', text: '许可证贸易' }
+    ], answer: 'A', explanation: '新建厂房和生产线属于绿地投资，是对外直接投资的重要方式。' },
+  { id: 18,
+    question: '霍尔将文化分为高语境文化和低语境文化。在低语境文化中，人们日常沟通更倾向于_____。',
+    options: [
+      { label: 'A', text: '依赖复杂的社会背景和身份提示' },
+      { label: 'B', text: '语言表达直接、明确，字面意思即是全部' },
+      { label: 'C', text: '通过非语言暗示来表达真实意图' },
+      { label: 'D', text: '讲究委婉，极力避免直接的冲突' }
+    ], answer: 'B', explanation: '低语境文化重视明确、直接、字面化的语言沟通。' },
+  { id: 19,
+    question: '一国的国际收支平衡表中，商品和劳务的进出口、投资收益等最基础的交易记录在_____。',
+    options: [
+      { label: 'A', text: '资本账户' },
+      { label: 'B', text: '金融账户' },
+      { label: 'C', text: '净误差与遗漏账户' },
+      { label: 'D', text: '经常账户' }
+    ], answer: 'D', explanation: '经常账户记录货物、服务、初次收入和二次收入等基础跨境交易。' },
+  { id: 20,
+    question: '古典贸易理论中，首先提出"绝对优势理论"，主张各国应生产并出口本国劳动生产率绝对高于他国的商品的经济学家是_____。',
+    options: [
+      { label: 'A', text: '亚当·斯密' },
+      { label: 'B', text: '大卫·李嘉图' },
+      { label: 'C', text: '赫克歇尔' },
+      { label: 'D', text: '邓宁' }
+    ], answer: 'A', explanation: '绝对优势理论由亚当·斯密提出，强调生产率绝对更高的商品分工。' },
+  { id: 21,
+    question: '某国在对进口汽车征税时，规定"每辆车征收 2000 美元固定税，同时加征车价 10% 的税"。这种关税征收方式被称为_____。',
+    options: [
+      { label: 'A', text: '从价税' },
+      { label: 'B', text: '从量税' },
+      { label: 'C', text: '复合税' },
+      { label: 'D', text: '选择税' }
+    ], answer: 'C', explanation: '同时按数量征收固定税和按价格比例征税，属于复合税。' },
+  { id: 22,
+    question: '根据邓宁的国际生产折衷理论，企业若想成功开展对外直接投资（FDI），必须同时具备所有权优势、内部化优势以及_____。',
+    options: [
+      { label: 'A', text: '技术绝对优势' },
+      { label: 'B', text: '区位优势' },
+      { label: 'C', text: '本土化文化优势' },
+      { label: 'D', text: '规模经济优势' }
+    ], answer: 'B', explanation: 'OLI理论包括所有权优势、区位优势和内部化优势三项条件。' },
+  { id: 23,
+    question: '历史上的布雷顿森林体系，其核心运行机制可以简要概括为_____。',
+    options: [
+      { label: 'A', text: '黄金与各国货币同时自由流通' },
+      { label: 'B', text: '各国货币直接与英镑挂钩' },
+      { label: 'C', text: '黄金非货币化与浮动汇率' },
+      { label: 'D', text: '美元与黄金挂钩，其他国家货币与美元挂钩' }
+    ], answer: 'D', explanation: '布雷顿森林体系可概括为"美元挂黄金、各国货币挂美元"。' },
+  { id: 24,
+    question: '跨国公司将生产、营销和管理职能全面下放到海外各子公司，允许它们根据当地市场的独特需求灵活调整产品。这属于_____。',
+    options: [
+      { label: 'A', text: '全球标准化战略' },
+      { label: 'B', text: '国际战略' },
+      { label: 'C', text: '本土化战略' },
+      { label: 'D', text: '跨国战略' }
+    ], answer: 'C', explanation: '本土化战略强调授权海外子公司根据当地差异调整经营。' },
+  { id: 25,
+    question: '在通常情况下，当一国的本币发生较大幅度的贬值时，对该国经济带来的直接贸易影响是_____。',
+    options: [
+      { label: 'A', text: '有利于本国商品出口，不利于商品进口' },
+      { label: 'B', text: '有利于商品进口，不利于商品出口' },
+      { label: 'C', text: '对进口和出口同时起到强烈的抑制作用' },
+      { label: 'D', text: '对进口和出口同时起到强烈的促进作用' }
+    ], answer: 'A', explanation: '本币贬值会使出口品对外国买家更便宜、进口品对本国买家更贵。' },
+  { id: 26,
+    question: '根据比较优势理论，如果一个国家在所有商品的生产上都处于绝对劣势，那么该国_____。',
+    options: [
+      { label: 'A', text: '不应该参加国际分工，应闭关锁国' },
+      { label: 'B', text: '应该选择本国劣势相对较小的商品进行分工和出口' },
+      { label: 'C', text: '应该选择本国劣势最大的商品进行分工和出口' },
+      { label: 'D', text: '无法从国际贸易中获得任何利益' }
+    ], answer: 'B', explanation: '比较优势说明即使没有绝对优势，也可选择相对劣势较小的产品参与分工。' },
+  { id: 27,
+    question: '下列国际贸易政策措施中，属于关税壁垒的是_____。',
+    options: [
+      { label: 'A', text: '进口配额限制' },
+      { label: 'B', text: '严苛的外汇管制' },
+      { label: 'C', text: '复杂的进口商品技术标准' },
+      { label: 'D', text: '提高进口商品的关税税率' }
+    ], answer: 'D', explanation: '提高进口关税税率直接通过税收限制进口，属于关税壁垒。' },
+  { id: 28,
+    question: '跨国公司在进入海外市场时，负责建造整个工厂，并在工厂建成且可以投入正常运转后，将钥匙移交给海外采购方。这种模式是_____。',
+    options: [
+      { label: 'A', text: '交钥匙工程' },
+      { label: 'B', text: '合资经营' },
+      { label: 'C', text: '管理合同' },
+      { label: 'D', text: '战略联盟' }
+    ], answer: 'A', explanation: '交钥匙工程是承包方建成可运转项目后交给业主使用。' },
+  { id: 29,
+    question: '在当今世界，大多数国家都采取"混合经济体制"。这种体制的典型特征是_____。',
+    options: [
+      { label: 'A', text: '经济完全由自由市场的供求关系决定' },
+      { label: 'B', text: '经济完全由政府计划和国有企业主导' },
+      { label: 'C', text: '自由市场调节与政府的宏观调控共同发挥作用' },
+      { label: 'D', text: '禁止任何私人财产所有权和民营企业' }
+    ], answer: 'C', explanation: '混合经济体制同时包含市场机制和政府宏观调控。' },
+  { id: 30,
+    question: '由外汇市场的供求关系决定，且政府不规定汇率波动上下限的汇率制度属于_____。',
+    options: [
+      { label: 'A', text: '固定汇率制' },
+      { label: 'B', text: '浮动汇率制' },
+      { label: 'C', text: '钉住汇率制' },
+      { label: 'D', text: '联合浮动制' }
+    ], answer: 'B', explanation: '浮动汇率制下汇率主要由外汇市场供求决定，政府不固定波动范围。' },
+  { id: 31,
+    question: '迈克尔·波特提出的国家竞争优势理论认为，决定一个国家在某种产业中能否取得全球竞争优势的核心要素之一是_____。',
+    options: [
+      { label: 'A', text: '绝对劳动生产率' },
+      { label: 'B', text: '国内需求条件' },
+      { label: 'C', text: '国际收支顺差规模' },
+      { label: 'D', text: '黄金储备数量' }
+    ], answer: 'B', explanation: '波特钻石模型包含需求条件，挑剔的国内需求可推动企业升级竞争力。' },
+  { id: 32,
+    question: '赫克歇尔-俄林理论（要素禀赋理论）认为，各国应当生产并出口那些_____。',
+    options: [
+      { label: 'A', text: '密集使用本国相对丰裕的生产要素所生产的商品' },
+      { label: 'B', text: '耗费本国劳动时间绝对最少的商品' },
+      { label: 'C', text: '具有高附加值的完全高新技术商品' },
+      { label: 'D', text: '处于产品生命周期衰退阶段的商品' }
+    ], answer: 'A', explanation: '要素禀赋理论认为国家会出口密集使用其相对丰裕要素的产品。' },
+  { id: 33,
+    question: '两个或多个国家达成协议，不仅取消彼此之间的贸易壁垒，而且对非成员国实行统一的共同对外关税。这种区域经济一体化形式是_____。',
+    options: [
+      { label: 'A', text: '自由贸易区' },
+      { label: 'B', text: '经济联盟' },
+      { label: 'C', text: '关税同盟' },
+      { label: 'D', text: '共同市场' }
+    ], answer: 'C', explanation: '关税同盟不仅取消成员间壁垒，还对非成员实行共同对外关税。' },
+  { id: 34,
+    question: '在霍夫斯泰德的文化维度理论中，用来衡量一个社会中人和人之间权力分配不平等被接受程度的指标是_____。',
+    options: [
+      { label: 'A', text: '个人主义与集体主义' },
+      { label: 'B', text: '长期导向性' },
+      { label: 'C', text: '不确定性规避' },
+      { label: 'D', text: '权力距离' }
+    ], answer: 'D', explanation: '权力距离衡量社会对权力分配不平等的接受程度。' },
+  { id: 35,
+    question: '下列关于大陆法系特征的描述，正确的是_____。',
+    options: [
+      { label: 'A', text: '法官判决主要以成文法典的法律条文为唯一依据' },
+      { label: 'B', text: '法官主要依赖过去的法律先例和判例来定罪' },
+      { label: 'C', text: '法律条文往往非常模糊，允许法官有极大的自由裁量权' },
+      { label: 'D', text: '历史上起源于英国的习惯法' }
+    ], answer: 'A', explanation: '大陆法系以成文法典为主要法律渊源，法官判决主要依据法典条文。' },
+  { id: 36,
+    question: '某跨国公司在海外由于未预料到的汇率变动，导致其未来跨国经营的销售额、成本和长期现金流的本币价值发生贬值。这种外汇风险被称为_____。',
+    options: [
+      { label: 'A', text: '交易风险' },
+      { label: 'B', text: '经济风险' },
+      { label: 'C', text: '折算风险' },
+      { label: 'D', text: '会计风险' }
+    ], answer: 'B', explanation: '经济风险关注汇率变化对企业未来销售、成本和长期现金流价值的影响。' },
+  { id: 37,
+    question: '跨国公司将本企业拥有的无形资产（如商标、专利、技术秘密）的使用权在一定时期内让渡给海外企业，并收取提成费。这种海外进入模式是_____。',
+    options: [
+      { label: 'A', text: '特许经营' },
+      { label: 'B', text: '直接出口' },
+      { label: 'C', text: '许可证贸易' },
+      { label: 'D', text: '独资子公司' }
+    ], answer: 'C', explanation: '许可证贸易是将专利、商标、技术秘密等无形资产使用权授权给海外企业。' },
+  { id: 38,
+    question: '当今现行的国际货币体系是_____。该体系承认浮动汇率制的合法性，并实现了黄金的非货币化。',
+    options: [
+      { label: 'A', text: '布雷顿森林体系' },
+      { label: 'B', text: '金本位制' },
+      { label: 'C', text: '国际金块本位制' },
+      { label: 'D', text: '牙买加体系' }
+    ], answer: 'D', explanation: '牙买加体系承认浮动汇率合法性，并推动黄金非货币化。' },
+  { id: 39,
+    question: '跨国公司面临着巨大的"降低成本压力"和高度的"地方回应（本土适应）压力"。为了同时满足这两者，企业将全球核心竞争力在各子公司间网络化共享。这种战略是_____。',
+    options: [
+      { label: 'A', text: '跨国战略' },
+      { label: 'B', text: '全球标准化战略' },
+      { label: 'C', text: '国际战略' },
+      { label: 'D', text: '本土化战略' }
+    ], answer: 'A', explanation: '跨国战略同时应对成本压力和本地响应压力，强调全球网络协同与知识共享。' },
+  { id: 40,
+    question: '某国政府硬性规定："国内组装生产的智能手机，其所使用的零部件至少有 40% 必须在本土采购和制造"。这种非关税壁垒被称为_____。',
+    options: [
+      { label: 'A', text: '自愿出口限制' },
+      { label: 'B', text: '进口配额' },
+      { label: 'C', text: '当地成分要求' },
+      { label: 'D', text: '反倾销限制' }
+    ], answer: 'C', explanation: '当地成分要求规定产品中必须含有一定比例的本土零部件或原材料。' }
+];
+
+// Continue choice questions 41-60
+const choiceQuestions2 = [
+  { id: 41,
+    question: '在某种经济体制下，社会生产什么、生产多少、如何生产以及产品如何分配，完全由政府中央计划机构统一决定，私人不拥有核心生产资料。这种体制属于_____。',
+    options: [
+      { label: 'A', text: '市场经济体制' },
+      { label: 'B', text: '计划经济体制' },
+      { label: 'C', text: '混合经济体制' },
+      { label: 'D', text: '传统经济体制' }
+    ], answer: 'B', explanation: '计划经济由中央计划机构决定生产、分配和资源配置。' },
+  { id: 42,
+    question: '根据波特的价值链理论，企业的经营活动可以分为基本活动和支持活动。下列属于支持活动的是_____。',
+    options: [
+      { label: 'A', text: '生产制造' },
+      { label: 'B', text: '市场营销与销售' },
+      { label: 'C', text: '内部与外部物流' },
+      { label: 'D', text: '人力资源管理与技术开发' }
+    ], answer: 'D', explanation: '人力资源管理和技术开发属于价值链支持活动，不是直接生产销售环节。' },
+  { id: 43,
+    question: '在国际商务中，部分跨国经理人习惯性地以自我本国的文化标准来衡量和审视海外一切行为，认为本国的文化和商业习惯绝对优于海外东道国。这种心态被称为_____。',
+    options: [
+      { label: 'A', text: '文化民族中心主义' },
+      { label: 'B', text: '文化相对主义' },
+      { label: 'C', text: '多元中心主义' },
+      { label: 'D', text: '地缘中心主义' }
+    ], answer: 'A', explanation: '文化民族中心主义是用本国文化标准评判他国，并认为本国方式更优。' },
+  { id: 44,
+    question: '某汽车跨国公司在海外投资建立了一家与母公司业务完全相同的整车制造组装厂。这种投资行为属于_____。',
+    options: [
+      { label: 'A', text: '垂直对外直接投资' },
+      { label: 'B', text: '间接证券投资' },
+      { label: 'C', text: '水平（横向）对外直接投资' },
+      { label: 'D', text: '战略组合投资' }
+    ], answer: 'C', explanation: '水平FDI是在海外建立与母公司同类产品、同一生产阶段的经营实体。' },
+  { id: 45,
+    question: '在外汇市场上，买卖双方约定在未来某一特定日期（如 3 个月后），按照当前双方约定的汇率进行外汇交割。该汇率被称为_____。',
+    options: [
+      { label: 'A', text: '即期汇率' },
+      { label: 'B', text: '远期汇率' },
+      { label: 'C', text: '官方汇率' },
+      { label: 'D', text: '交叉汇率' }
+    ], answer: 'B', explanation: '远期汇率是约定未来某日按当前约定价格交割外汇的汇率。' },
+  { id: 46,
+    question: '推动当代生产全球化和市场全球化迅猛发展的两大核心驱动力是_____。',
+    options: [
+      { label: 'A', text: '宗教融合与资本主义扩张' },
+      { label: 'B', text: '贸易投资壁垒的降低与技术（如信息、运输技术）的进步' },
+      { label: 'C', text: '金本位制的回归与区域保护主义' },
+      { label: 'D', text: '联合国成立与非政府组织兴起' }
+    ], answer: 'B', explanation: '贸易投资壁垒下降与信息、运输等技术进步共同推动全球化。' },
+  { id: 47,
+    question: '严格规定跨国企业不得向东道国政府官员行贿以赢得商业合同的美国法案是_____。',
+    options: [
+      { label: 'A', text: '《谢尔曼反托拉斯法》' },
+      { label: 'B', text: '《海外反腐败法》（FCPA）' },
+      { label: 'C', text: '《萨班斯-奥克斯利法》' },
+      { label: 'D', text: '《关税法案》' }
+    ], answer: 'B', explanation: '美国FCPA禁止企业为获取商业利益向外国官员行贿。' },
+  { id: 48,
+    question: '专利、版权和商标均属于东道国法律保护的_____范畴。',
+    options: [
+      { label: 'A', text: '实物资产' },
+      { label: 'B', text: '知识产权' },
+      { label: 'C', text: '递延资产' },
+      { label: 'D', text: '共有财产' }
+    ], answer: 'B', explanation: '专利、版权、商标保护的是知识成果，属于知识产权。' },
+  { id: 49,
+    question: '某个社会普遍倾向于高维度的"不确定性规避"，这意味着该社会成员通常_____。',
+    options: [
+      { label: 'A', text: '极度喜欢冒险和频繁更换工作' },
+      { label: 'B', text: '依赖严格的法律、规则、流程和制度来减少不确定感' },
+      { label: 'C', text: '认为生活中的冲突是不需要控制的' },
+      { label: 'D', text: '极度推崇变革与颠覆性创新' }
+    ], answer: 'B', explanation: '高不确定性规避文化倾向通过规则、制度和流程减少风险与不确定感。' },
+  { id: 50,
+    question: '在高度强调个人主义（Individualism）的文化中，组织管理往往表现为_____。',
+    options: [
+      { label: 'A', text: '团队终身雇佣和集体决策' },
+      { label: 'B', text: '绩效考核紧密挂钩个人成就，人员流动率相对较高' },
+      { label: 'C', text: '强调员工对企业的绝对高度忠诚' },
+      { label: 'D', text: '决策时往往由资深长辈或家族首领主导' }
+    ], answer: 'B', explanation: '个人主义文化强调个人成就、个人责任和以个人绩效为基础的激励。' },
+  { id: 51,
+    question: '雷蒙德·弗农提出的产品生命周期理论指出，当创新产品进入"标准化成熟产品阶段"时，该产品的生产中心通常会_____。',
+    options: [
+      { label: 'A', text: '牢牢控制在最初的创新国（发达国家）' },
+      { label: 'B', text: '转移到劳动力成本更低的发展中国家' },
+      { label: 'C', text: '彻底消失' },
+      { label: 'D', text: '转移到完全没有消费需求的极度落后地区' }
+    ], answer: 'B', explanation: '产品标准化成熟后，生产往往转向劳动力成本较低的发展中国家。' },
+  { id: 52,
+    question: '旨在通过废除成员国之间的内部关税以实现区内贸易自由化，但各成员国仍保持独立的、针对非成员国的外部关税体制。这种组织形式是_____。',
+    options: [
+      { label: 'A', text: '自由贸易区' },
+      { label: 'B', text: '关税同盟' },
+      { label: 'C', text: '共同市场' },
+      { label: 'D', text: '经济联盟' }
+    ], answer: 'A', explanation: '自由贸易区取消成员内部关税，但各成员仍保留独立对外关税。' },
+  { id: 53,
+    question: '在直接标价法下，如果汇率数值由 100 上升到 105，这意味着_____。',
+    options: [
+      { label: 'A', text: '外币升值，本币贬值' },
+      { label: 'B', text: '本币升值，外币贬值' },
+      { label: 'C', text: '外币的购买力大幅下降' },
+      { label: 'D', text: '本币购买力急剧损毁' }
+    ], answer: 'A', explanation: '直接标价法下汇率上升表示同一单位外币需要更多本币购买，即外币升值、本币贬值。' },
+  { id: 54,
+    question: '欧盟全面实施的《碳边境调节机制》（CBAM，俗称碳关税）在实质上被视为一种新型的_____。',
+    options: [
+      { label: 'A', text: '双边货币互换协议' },
+      { label: 'B', text: '绿色贸易壁垒' },
+      { label: 'C', text: '出口财政补贴政策' },
+      { label: 'D', text: '区域经济自愿减排协定' }
+    ], answer: 'B', explanation: 'CBAM以环保为名提高合规和成本门槛，实质上可形成绿色贸易壁垒。' },
+  { id: 55,
+    question: '企业在日常经营中，由于汇率在合同签订日与实际结汇日（收到或支付货款日）之间发生变动，导致应收或应付款项本币价值发生波动的风险是_____。',
+    options: [
+      { label: 'A', text: '交易风险 (Transaction Exposure)' },
+      { label: 'B', text: '经济风险' },
+      { label: 'C', text: '折算风险' },
+      { label: 'D', text: '政治风险' }
+    ], answer: 'A', explanation: '交易风险发生在合同签订到收付款结汇之间，影响应收应付款的本币价值。' },
+  { id: 56,
+    question: '跨国公司在编制合并财务报表时，由于必须将海外子公司的外币资产和负债按照当前的即期汇率折算为母公司本币，从而产生的账面损益风险被称为_____。',
+    options: [
+      { label: 'A', text: '交易风险' },
+      { label: 'B', text: '战略风险' },
+      { label: 'C', text: '折算风险 / 会计风险 (Translation Exposure)' },
+      { label: 'D', text: '经营风险' }
+    ], answer: 'C', explanation: '折算风险来自合并报表时把海外子公司外币资产负债折算为母公司本币。' },
+  { id: 57,
+    question: '实施全球标准化战略的企业，其战略重心主要落在_____。',
+    options: [
+      { label: 'A', text: '为每一个海外市场定制完全不同核心构造的产品' },
+      { label: 'B', text: '依靠全球规模经济和标准化生产，追求极端低成本控制' },
+      { label: 'C', text: '全面采取分权管理' },
+      { label: 'D', text: '彻底放弃跨国供应链' }
+    ], answer: 'B', explanation: '全球标准化战略通过统一产品和流程获取规模经济、降低成本。' },
+  { id: 58,
+    question: '跨国公司在管理海外子公司时，通过跨国网络极其敏捷、快速地拓展全球市场，依靠数字化平台集中处理物流、合规而将生产保留在低成本制造国的模式是_____。',
+    options: [
+      { label: 'A', text: '传统 WOS 直接建厂模式' },
+      { label: 'B', text: '跨境电商数字化出海全托管模式' },
+      { label: 'C', text: '间接出口代理模式' },
+      { label: 'D', text: '全球区域分部组织模式' }
+    ], answer: 'B', explanation: '全托管模式由平台集中处理物流、营销、合规和售后，中小企业主要负责供货。' },
+  { id: 59,
+    question: '跨国公司通过高价向海外子公司出售原材料，或低价从子公司收购产成品，以此在多国之间转移利润、规避东道国高额税收的做法，被称为_____。',
+    options: [
+      { label: 'A', text: '套期保值管理' },
+      { label: 'B', text: '转移定价 (Transfer Pricing)' },
+      { label: 'C', text: '内部化优势溢出' },
+      { label: 'D', text: '契约式许可证贸易' }
+    ], answer: 'B', explanation: '转移定价通过关联企业内部交易价格安排，把利润在不同税负地区之间转移。' },
+  { id: 60,
+    question: '联合国大会通过的旨在规范跨国公司商业行为、促进东道国经济可持续发展的规范属于国际商务的_____。',
+    options: [
+      { label: 'A', text: '强制性民事法律' },
+      { label: 'B', text: '国际商业伦理与社会责任' },
+      { label: 'C', text: '成员国关税法典' },
+      { label: 'D', text: '离岸金融法规' }
+    ], answer: 'B', explanation: '联合国关于跨国公司行为的规范主要属于商业伦理和企业社会责任范畴。' }
+];
+
+// Merge all choice questions
+choiceQuestions.push(...choiceQuestions2);
+
+// ============================================================
+// 数据：60 道判断题
+// ============================================================
+const judgeQuestions = [
+  { id: 1, statement: '全球化只包括商品跨国流动，不包括服务、资本、技术和人员流动。', answer: false, explanation: '全球化还包括服务、资本、技术、信息和人员等跨国流动。' },
+  { id: 2, statement: '民主制度通常强调公民政治参与、权力制衡和法治约束。', answer: true, explanation: '民主制度通常以政治参与、法治和权力制衡为基本特征。' },
+  { id: 3, statement: '在低权力距离文化中，员工通常更期望上级给予明确的独裁式指令，并认为层级差异是理所当然的。', answer: false, explanation: '低权力距离文化强调平等沟通，不倾向把独裁式指令视为理所当然。' },
+  { id: 4, statement: '比较优势的判断依据是机会成本，而不是绝对生产效率。', answer: true, explanation: '比较优势看的是机会成本，而不是谁的绝对效率更高。' },
+  { id: 5, statement: '非关税壁垒通常比关税更隐蔽，也可能更灵活。', answer: true, explanation: '非关税壁垒常通过标准、配额、许可等方式发挥作用，通常更隐蔽。' },
+  { id: 6, statement: '进口配额是由进口国政府直接限制某种商品进口数量的措施，而自愿出口限制则是出口国政府应进口国的要求，主动对本国某些商品出口实行的数量限制，两者的配额收益均流向进口国政府。', answer: false, explanation: '自愿出口限制的配额收益通常不流向进口国政府，该说法过度概括。' },
+  { id: 7, statement: 'FDI 流量是某一时点累计形成的外国直接投资总规模。', answer: false, explanation: 'FDI流量是一定时期的投资额；某一时点累计规模是FDI存量。' },
+  { id: 8, statement: '国际收支采用复式记账，因此每笔交易原则上同时有借方和贷方记录。', answer: true, explanation: '复式记账要求同一交易同时形成借方和贷方记录。' },
+  { id: 9, statement: '经常项目赤字一定意味着该国经济已经崩溃。', answer: false, explanation: '经常项目赤字可能反映进口增加、投资扩张等，并不必然意味着经济崩溃。' },
+  { id: 10, statement: '在间接标价法下，汇率数值上升通常表示本币升值。', answer: true, explanation: '间接标价法表示单位本币可兑换多少外币，数值上升通常意味着本币升值。' },
+  { id: 11, statement: '远期外汇合约的主要作用之一是锁定未来汇率，降低不确定性。', answer: true, explanation: '远期合约可提前锁定未来汇率，降低汇率波动不确定性。' },
+  { id: 12, statement: '牙买加体系承认汇率制度多样化，并使黄金逐步非货币化。', answer: true, explanation: '牙买加体系承认多样化汇率制度，并削弱黄金的货币职能。' },
+  { id: 13, statement: '欧洲货币市场中的"欧洲"是地理概念，只能发生在欧洲大陆。', answer: false, explanation: '欧洲货币市场中的"欧洲"不是地理概念，指境外货币市场。' },
+  { id: 14, statement: '全球区域分部结构通常更有利于适应不同地区市场差异。', answer: true, explanation: '全球区域分部按地区组织经营，有利于适应地区市场差异。' },
+  { id: 15, statement: '组织文化越强，企业在任何环境下越容易转型成功。', answer: false, explanation: '强文化可能增强一致性，但也可能造成路径依赖，未必有利于转型。' },
+  { id: 16, statement: '一国的国际收支平衡表在统计上由于采用了复式记账法，最终总额总是平衡的，但这并不意味着该国在实际经济生活中不存在国际收支逆差。', answer: true, explanation: '统计平衡不等于经济意义上的国际收支不存在顺差或逆差。' },
+  { id: 17, statement: '比较优势理论的核心观点是：即使一个国家在所有产品生产上都没有绝对优势，只要通过"两优取其重，两劣取其轻"的分工，依然能从贸易中获益。', answer: true, explanation: '比较优势强调选择相对优势或相对劣势较小的产品参与分工。' },
+  { id: 18, statement: '进口国要对跨国贸易征收反倾销税，不仅要证明存在倾销行为，通常还要证明该倾销对本国相关产业造成了实质性损害。', answer: true, explanation: '反倾销通常需证明倾销、损害以及二者之间的因果关系。' },
+  { id: 19, statement: '绿地投资和跨国并购是国际直接投资的两种最主要形式。', answer: true, explanation: '绿地投资和跨国并购是FDI的两种典型进入方式。' },
+  { id: 20, statement: '全球标准化战略的核心是针对每一个不同的东道国市场单独定制差异化的、完全符合当地习俗的产品。', answer: false, explanation: '全球标准化战略重在统一产品和流程降低成本，而非完全本土定制。' },
+  { id: 21, statement: '离岸金融市场（如开曼群岛、伦敦离岸市场）主要办理的是非居民（非本国居民）之间的本外币借贷业务。', answer: true, explanation: '离岸金融市场主要服务非居民之间的跨境金融交易。' },
+  { id: 22, statement: '普通法系的一大特征是判决主要依赖成文法典的逐字条文，法官完全没有依据过去判例进行判决的权力。', answer: false, explanation: '普通法系重视判例，不能说法官完全没有依据先例判决的权力。' },
+  { id: 23, statement: '本币汇率升值通常会降低本国出口产品的竞争力，但有助于降低进口商品的本币成本。', answer: true, explanation: '本币升值使出口品外币价格上升、进口品本币成本下降。' },
+  { id: 24, statement: '在高语境文化中，人们的沟通往往非常直接，信息几乎全部通过直白的字面语言表达。', answer: false, explanation: '高语境文化沟通更依赖背景、关系和暗示，不是完全直白表达。' },
+  { id: 25, statement: '混合经济体制中，既存在私有制和市场调节，也存在公有制和政府干预。', answer: true, explanation: '混合经济兼有市场调节、私有制和政府干预、公有成分。' },
+  { id: 26, statement: '相比在海外建立独资子公司，特许经营或许可证贸易模式对跨国公司来说资金投入更少，面临的财务风险也较低。', answer: true, explanation: '特许经营和许可证贸易通常资本投入较少，但控制力也较弱。' },
+  { id: 27, statement: '世界贸易组织的基本原则之一是非歧视原则，它主要通过最惠国待遇和国民待遇来体现。', answer: true, explanation: 'WTO非歧视原则主要体现为最惠国待遇和国民待遇。' },
+  { id: 28, statement: '跨国并购最大的优势之一是可以在短时间内帮助企业快速切入海外市场，并直接利用被收购企业的品牌和渠道。', answer: true, explanation: '并购可快速获得当地品牌、渠道、技术或市场份额。' },
+  { id: 29, statement: '差异化战略的终极目标是要求跨国公司在全行业中提供最标准化、生产成本绝对最低的产品。', answer: false, explanation: '差异化战略追求独特价值，不是最低成本和最大标准化。' },
+  { id: 30, statement: '由于全球化已经高度发达，文化差异（如宗教、习俗、消费习惯）已经不再是跨国公司海外经营需要考虑的障碍。', answer: false, explanation: '文化差异仍会影响营销、谈判、管理和消费者行为。' },
+  { id: 31, statement: '大陆法系国家的法官在审判案件时具有极大的创造性，判决主要依赖于过去法官留下的"判例先例"。', answer: false, explanation: '大陆法系主要依赖成文法典，判例不是核心法律渊源。' },
+  { id: 32, statement: '霍夫斯泰德认为，在集体主义色彩浓厚的国家，人们更倾向于维护群体的利益，并在组织中强调忠诚与团队协作。', answer: true, explanation: '集体主义强调群体利益、忠诚、团队关系和组织归属。' },
+  { id: 33, statement: '关税同盟与自由贸易区相比，其核心区别在于成员国之间不仅取消了内部关税，还对外部非成员国筑起了统一的共同关税壁垒。', answer: true, explanation: '共同对外关税是关税同盟区别于自由贸易区的关键。' },
+  { id: 34, statement: '要素禀赋理论与大卫·李嘉图的比较优势理论完全一样，两者都认为决定国际贸易流向的唯一要素是各国的绝对劳动时间。', answer: false, explanation: '要素禀赋理论强调生产要素相对丰裕程度，不是绝对劳动时间。' },
+  { id: 35, statement: '外汇风险中的"交易风险"是指企业在日常经营中，由于汇率在合同签订日与实际结汇日之间发生变动，导致应收或应付款项本币价值发生变化的风险。', answer: true, explanation: '交易风险正是合同日至结算日汇率变化影响应收应付款的风险。' },
+  { id: 36, statement: '实施全球标准化战略的跨国公司，其主要精力放在如何为不同的海外东道国市场进行精细化的产品定制，因而其本地回应压力极高。', answer: false, explanation: '全球标准化战略主要关注成本和规模经济，本地回应压力相对较低。' },
+  { id: 37, statement: '采用许可证贸易模式进入海外市场，可以让企业在不需要投入大量海外建厂资金的情况下获取无形资产的收益，但企业对海外运营的控制力较低。', answer: true, explanation: '许可证贸易投入低、收益快，但授权方对海外经营控制较弱。' },
+  { id: 38, statement: '根据牙买加协议，美元重新与黄金挂钩，全球再次回归到了由金平价决定的固定汇率时代。', answer: false, explanation: '牙买加协议并未恢复美元与黄金挂钩，而是推动黄金非货币化。' },
+  { id: 39, statement: '政府通过规定进口商品中必须包含一定比例的本国零部件或原材料（即当地成分要求），属于典型的非关税壁垒。', answer: true, explanation: '当地成分要求是通过本土采购比例限制贸易的非关税壁垒。' },
+  { id: 40, statement: '在企业价值链中，生产制造、市场营销、售后服务等活动被称为"支持活动"，而研发和采购则被称为"基本活动"。', answer: false, explanation: '生产、营销、服务是基本活动；研发、采购、人力资源等属于支持活动。' },
+  { id: 41, statement: '纯粹市场经济体制的核心特征是生产资料私有制，且商品的价格、产量完全由供求关系这只"看不见的手"来调节。', answer: true, explanation: '市场经济强调私有产权和价格由供求关系调节。' },
+  { id: 42, statement: '垂直对外直接投资是指跨国公司在海外设立与母公司完全生产同一种产品、处于同一生产阶段的子公司的行为。', answer: false, explanation: '垂直FDI是上下游不同生产阶段投资；题干描述的是水平FDI。' },
+  { id: 43, statement: '绝对购买力平价理论认为，在不考虑交易成本和贸易壁垒的情况下，两种货币之间的汇率主要由两国货币的相对购买力（即价格水平之比）决定。', answer: true, explanation: '绝对购买力平价用两国价格水平之比解释均衡汇率。' },
+  { id: 44, statement: '跨国企业之间的战略联盟只能在完全互补、不具有竞争关系的非同业企业之间建立，竞争对手之间绝不可能结盟。', answer: false, explanation: '竞争对手之间也可能为研发、市场进入或标准制定而结成战略联盟。' },
+  { id: 45, statement: '跨国公司在海外经营失败，很多时候并不是因为资金或技术不足，而是因为缺乏跨文化管理能力，盲目搬用本国管理经验所致。', answer: true, explanation: '跨文化管理失败常导致海外经营中的沟通、激励和市场适应问题。' },
+  { id: 46, statement: '根据产品生命周期理论，发展中国家最终会由于具备劳动力成本优势，而在产品标准化阶段成为该创新产品的净出口国。', answer: true, explanation: '产品成熟标准化后，低成本生产地可能成为主要生产和出口基地。' },
+  { id: 47, statement: '幼稚产业保护理论的核心观点是，政府应当对国内所有新成立的、缺乏竞争力的产业提供无限期的全面高关税壁垒保护。', answer: false, explanation: '幼稚产业保护应有选择、有期限，不是无限期保护所有新产业。' },
+  { id: 48, statement: '战略性贸易政策主张，在不完全竞争和规模经济行业中，政府可以通过补贴等干预手段扶持本国关键企业夺取全球先发优势。', answer: true, explanation: '战略性贸易政策认为政府可在规模经济行业扶持本国企业取得优势。' },
+  { id: 49, statement: '跨国矩阵结构（Global Matrix Structure）虽然能够平衡全球整合和本土响应压力，但由于存在双重指挥链，极易引发组织内部的管理冲突。', answer: true, explanation: '矩阵结构能兼顾多重目标，但双重汇报关系容易造成冲突。' },
+  { id: 50, statement: '在国际收支平衡表的复式记账法中，凡是引起本国外汇资产增加、本国资金流入的交易项目，原则上都应当记入贷方（Credit）。', answer: true, explanation: '资金流入或外汇资产增加通常按国际收支规则记入贷方。' },
+  { id: 51, statement: '对外直接投资（FDI）存量（Stock）是指在某一段特定时期内（如一年），流入或流出一个国家的外国直接投资资本总额。', answer: false, explanation: 'FDI存量是某一时点累计投资额；一定时期流入流出额是流量。' },
+  { id: 52, statement: '跨国公司实施"本土化战略（Localization Strategy）"时，总部通常会采取高度分权的管理模式，给予海外团队充分的决策自主权。', answer: true, explanation: '本土化战略需要海外子公司有较高自主权，以快速适应当地市场。' },
+  { id: 53, statement: '跨国企业之间成立的战略联盟（Strategic Alliance）是一种长期、紧密的契约或股权合作形式，参与结盟的企业通常会彻底丧失其原有的独立法人资格。', answer: false, explanation: '战略联盟是合作关系，参与方通常仍保持独立法人资格。' },
+  { id: 54, statement: '外汇风险中的"折算风险"（会计风险）仅仅是一种账面上的记账损益变动，并不会对企业当前实际的跨国现金流造成直接影响。', answer: true, explanation: '折算风险多体现为账面损益，不一定立即影响现金流。' },
+  { id: 55, statement: '根据迈克尔·波特的钻石模型，国内庞大且成熟挑剔的消费者条件有助于倒逼本土企业不断进行技术创新，从而建立国际竞争优势。', answer: true, explanation: '挑剔成熟的国内需求会促进企业创新和质量升级。' },
+  { id: 56, statement: '在直接标价法下，银行报出的买入价（Bid Rate）是指银行向客户买入外币时系统所付出的本币价格。', answer: false, explanation: '直接标价法下银行买入外币的买入价低于卖出价，不是"系统所付出的"表述。' },
+  { id: 57, statement: '在国际经营中，"结构服从战略"意味着跨国公司必须根据其选择的国际化发展战略，动态地调整并建立相匹配的子公司管控链条。', answer: true, explanation: '结构服从战略要求组织结构与国际化战略、管控方式相匹配。' },
+  { id: 58, statement: '部分跨境电商企业通过将大宗包裹拆分成大量低于东道国起征点的小包裹进行快递通关，这属于利用"免税额度（De Minimis Rule）规则"规避关税壁垒的典型现象。', answer: true, explanation: '拆分低值小包裹利用免税额度，是规避关税成本的一种做法。' },
+  { id: 59, statement: '购买力平价理论在短期内往往能完美预测现实汇率的精准走势，没有任何误差。', answer: false, explanation: '购买力平价更适合解释长期趋势，短期汇率受资本流动、预期等影响较大。' },
+  { id: 60, statement: '霍夫斯泰德文化维度中的"规避不确定性（Uncertainty Avoidance）"程度越高的社会，其成员通常越喜欢频繁更换工作并盲目进行高风险投资。', answer: false, explanation: '高不确定性规避倾向稳定和规则，不是偏好频繁跳槽与高风险投资。' }
+];
+
+// ============================================================
+// 应用逻辑
+// ============================================================
+let currentMode = 'choice';   // 'choice' or 'judge'
+let currentIndex = 0;
+let answers = { choice: {}, judge: {} };
+
+function getQuestions() {
+  return currentMode === 'choice' ? choiceQuestions : judgeQuestions;
+}
+
+function getAnswers() {
+  return answers[currentMode];
+}
+
+function switchTab(mode) {
+  currentMode = mode;
+  currentIndex = 0;
+  document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', (i === 0 && mode === 'choice') || (i === 1 && mode === 'judge'));
+  });
+  render();
+}
+
+function goToQuestion(index) {
+  const qs = getQuestions();
+  if (index >= 0 && index < qs.length) {
+    currentIndex = index;
+    render();
+  }
+}
+
+function prevQ() { if (currentIndex > 0) { currentIndex--; render(); } }
+function nextQ() { if (currentIndex < getQuestions().length - 1) { currentIndex++; render(); } }
+
+function handleChoiceSelect(qId, label) {
+  const ans = getAnswers();
+  if (ans[qId] !== undefined) return; // already answered
+  ans[qId] = label;
+  render();
+}
+
+function handleJudgeSelect(qId, value) {
+  const ans = getAnswers();
+  if (ans[qId] !== undefined) return;
+  ans[qId] = value;
+  render();
+}
+
+function handleJump(e) {
+  const val = parseInt(e.target.value);
+  if (e.key === 'Enter' && !isNaN(val)) {
+    goToQuestion(val - 1);
+    e.target.value = '';
+  }
+}
+
+function resetTab() {
+  answers[currentMode] = {};
+  currentIndex = 0;
+  render();
+}
+
+// ============================================================
+// 渲染
+// ============================================================
+function render() {
+  const qs = getQuestions();
+  const ans = getAnswers();
+  const total = qs.length;
+  const q = qs[currentIndex];
+  const app = document.getElementById('app');
+
+  if (!q) { app.innerHTML = ''; return; }
+
+  const answered = ans[q.id] !== undefined;
+  const isChoice = currentMode === 'choice';
+
+  // Progress
+  const answeredCount = Object.keys(ans).length;
+  const pct = Math.round((answeredCount / total) * 100);
+
+  let html = `
+    <div class="progress-bar">
+      <span class="progress-text">${answeredCount}/${total} 已答</span>
+      <div class="progress-track">
+        <div class="progress-fill" style="width:${pct}%"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="q-number">第 ${currentIndex + 1} 题 / 共 ${total} 题</div>
+      <div class="q-text">${isChoice ? q.question : q.statement}</div>
+  `;
+
+  if (isChoice) {
+    html += '<div class="options">';
+    q.options.forEach(opt => {
+      let cls = 'option-btn';
+      if (answered) {
+        cls += ' disabled';
+        if (opt.label === q.answer) cls += ' correct';
+        else if (opt.label === ans[q.id] && opt.label !== q.answer) cls += ' wrong';
+      }
+      html += `<button class="${cls}" onclick="handleChoiceSelect(${q.id}, '${opt.label}')">
+        <span class="label">${opt.label}</span>
+        <span class="text">${opt.text}</span>
+      </button>`;
+    });
+    html += '</div>';
+  } else {
+    // Judge mode
+    html += '<div class="options">';
+    const opts = [
+      { label: '√', text: '正确', value: true },
+      { label: '×', text: '错误', value: false }
+    ];
+    opts.forEach(opt => {
+      let cls = 'option-btn';
+      if (answered) {
+        cls += ' disabled';
+        if (opt.value === q.answer) cls += ' correct';
+        else if (opt.value === ans[q.id] && opt.value !== q.answer) cls += ' wrong';
+      }
+      html += `<button class="${cls}" onclick="handleJudgeSelect(${q.id}, ${opt.value})">
+        <span class="label">${opt.label}</span>
+        <span class="text">${opt.text}</span>
+      </button>`;
+    });
+    html += '</div>';
+  }
+
+  // Reveal area - show if answered
+  if (answered) {
+    const isCorrect = ans[q.id] === q.answer;
+    let ansDisplay;
+    if (isChoice) {
+      const correctOpt = q.options.find(o => o.label === q.answer);
+      ansDisplay = correctOpt ? `${q.answer}. ${correctOpt.text}` : q.answer;
+    } else {
+      ansDisplay = q.answer ? '正确（√）' : '错误（×）';
+    }
+    const tagText = isCorrect ? '✓ 回答正确' : '✗ 回答错误';
+    const tagCls = isCorrect ? 'correct-tag' : 'wrong-tag';
+    const answerLabel = isChoice ? '正确答案' : '正确答案';
+
+    html += `<div class="reveal">
+      <div class="ans"><span class="tag ${tagCls}">${tagText}</span></div>
+      <div class="ans">${answerLabel}：${ansDisplay}</div>
+      <div class="exp">💡 ${q.explanation}</div>
+    </div>`;
+  }
+
+  html += '</div>';
+
+  // Navigation
+  html += '<div class="nav-btns">';
+  html += `<button class="nav-btn secondary" onclick="prevQ()" ${currentIndex === 0 ? 'disabled' : ''}>← 上一题</button>`;
+  html += `<div class="nav-center">
+    <input class="jump-input" type="number" min="1" max="${total}" placeholder="跳转" onkeydown="handleJump(event)">
+  </div>`;
+  html += `<button class="nav-btn primary" onclick="nextQ()" ${currentIndex === total - 1 ? 'disabled' : ''}>下一题 →</button>`;
+  html += '</div>';
+
+  // Bottom: reset + summary link
+  if (answeredCount === total) {
+    html += `<div class="card summary-card">
+      <h2>🎉 全部答完！</h2>
+      <div class="detail">
+        <div class="score">${computeScore()}%</div>
+        <p>共 ${total} 题，答对 ${computeCorrectCount()} 题，答错 ${total - computeCorrectCount()} 题</p>
+      </div>
+      <button class="restart-btn" onclick="resetTab()">🔄 重新刷题</button>
+    </div>`;
+  }
+
+  app.innerHTML = html;
+}
+
+function computeCorrectCount() {
+  const qs = getQuestions();
+  const ans = getAnswers();
+  let correct = 0;
+  qs.forEach(q => {
+    if (ans[q.id] !== undefined && ans[q.id] === q.answer) correct++;
+  });
+  return correct;
+}
+
+function computeScore() {
+  const total = getQuestions().length;
+  const correct = computeCorrectCount();
+  return Math.round((correct / total) * 100);
+}
+
+// Initial render
+render();
+</script>
+</body>
+</html>
