@@ -869,6 +869,21 @@ const judgeQuestions = [
 ];
 
 // ============================================================
+// 洗牌函数：随机打乱数组（Fisher-Yates）
+// ============================================================
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// 每次加载页面时随机打乱题目顺序
+shuffleArray(choiceQuestions);
+shuffleArray(judgeQuestions);
+
+// ============================================================
 // 应用逻辑
 // ============================================================
 let currentMode = 'choice';   // 'choice' or 'judge'
